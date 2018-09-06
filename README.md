@@ -144,6 +144,3 @@ The last of this node's children. `null` if no children.
 
 ###### _node_.**parent** <*Node*|*null*>
 The parent of the node. `null` if sibling of root.
-
-###### _node_.**parent** <*Node*|*null*>
-The parent of the node. `null` if sibling of root.
