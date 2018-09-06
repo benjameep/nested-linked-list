@@ -1,0 +1,29 @@
+{
+  "name": "poptart",
+  "version": "0.1.0",
+  "description": "Nested Linked Lists",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjameep/nested-linked-list.git"
+  },
+  "keywords": [
+    "linked list",
+    "data structure",
+    "data",
+    "structure",
+    "linked",
+    "list",
+    "tree",
+    "traversal"
+  ],
+  "author": "Benjamin Earl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjameep/nested-linked-list/issues"
+  },
+  "homepage": "https://github.com/benjameep/nested-linked-list#readme"
+}
