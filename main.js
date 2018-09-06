@@ -10,27 +10,24 @@ function insert(n1,n2,n,p){
   n1[n] = n2
 }
 function remove(node){
-  if(node.next != null){
-    node.next.prev = node.prev
-    node.next.Bprev = node.Bprev
-    node.next.Aprev = node.prev||node.Aprev
-  }
-  if(node.prev != null){
-    node.prev.next = node.next
-    node.prev.Bnext = node.next||node.Bnext
-    node.next.Anext = node.Anext
-  }
-  if(node.parent.head == node) {
-    node.parent.head = node.next
-    node.parent.Bnext = node.next||node.Bnext
-    node.parent.prev.Anext = node.Anext
-    if(node.parent.head == null) node.parent.tail == null;
-  }
-  if(node.parent.tail == node) {
-    node.parent.tail = node.prev
-    node.parent.next.Bprev = node.Bprev
-    node.parent.Aprev = node.prev||node.Aprev
-    if(node.parent.tail == null) node.parent.head == null;
+  node.n.p = node.p
+  node.p.n = node.next||node.n
+  if(node.next != null) node.next.prev = node.prev
+  if(node.prev != null) node.prev.next = node.next
+  /* If not on top level */
+  if(node.parent){
+    /* If node is the first child */
+    if(node.parent.head == node) {
+      node.parent.head = node.next
+      node.parent.n = node.next||node.n
+      if(node.parent.head == null) node.parent.tail == null;
+    }
+    /* If node is the last child */
+    if(node.parent.tail == node) {
+      node.parent.tail = node.prev
+      if(node.parent.next) node.parent.next.p = node.p
+      if(node.parent.tail == null) node.parent.head == null;
+    }
   }
 }
 const methods = {
@@ -38,34 +35,30 @@ const methods = {
     var node = this.create(id,data,this.parent)
     if(this.parent && this.parent.head == this) { this.parent.head = node }
     insert(this,node,'prev','next')
-    insert(this,node,'Bprev','Bnext')
+    insert(this,node,'p','n')
     return node.protected
   },
   insertAfter(id,data){
     var node = this.create(id,data,this.parent)
     if(this.parent && this.parent.tail == this) { this.parent.tail = node }
     insert(this,node,'next','prev')
-    insert(this,node,'Bnext','Bprev')
+    insert(this,node,'n','p')
     return node.protected
   },
   push(id,data){
     var node = this.create(id,data,this)
-    insert(this.next||this.Bnext,node,'Bprev','Bnext')
+    insert(this.next||this.n,node,'p','n')
     // Attach it to our tail
     if(this.tail != null) insert(this.tail,node,'next','prev');
     this.tail = node
     if(this.head == null) this.head = node;
-
-    console.log(this.tail && this.tail.id,this.id)
     return node.protected
   },
   unshift(id,data){
     var node = this.create(id,data,this)
-    insert(this,node,'Bnext','Bprev')
-    // insert(this.prev||this.Aprev,node,'Aprev','Anext')
+    insert(this,node,'n','p')
     // Attach it to our head
     if(this.head != null) insert(this.head,node,'prev','next');
-    // if(this.head != null) insert(node,this.head,'next','prev');
     this.head = node
     if(this.tail == null) this.tail = node;
     return node.protected
@@ -93,8 +86,8 @@ function Node(id,data,parent=null){
 
   var node = {
     id:id,
-    Bnext:null,
-    Bprev:null,
+    n:null,
+    p:null,
     next:null,
     prev:null,
     head:null,
@@ -106,13 +99,13 @@ function Node(id,data,parent=null){
   node.protected = {
     data:data,
     get id(){return node.id},
-    get Bnext(){return node.Bnext && (node.Bnext.id!=TAIL||null) && node.Bnext.protected },
-    get Bprev(){return node.Bprev && (node.Bprev.id!=HEAD||null) && node.Bprev.protected },
+    get n(){return node.n && (node.n.id!=TAIL||null) && node.n.protected },
+    get p(){return node.p && (node.p.id!=HEAD||null) && node.p.protected },
     get next(){return node.next && (node.next.id!=TAIL||null) && node.next.protected},
     get prev(){return node.prev && (node.prev.id!=HEAD||null) && node.prev.protected},
     get head(){return node.head && node.head.protected },
     get tail(){return node.tail && node.tail.protected },
-    get parent(){return node.parent && node.parent.protected },
+    get parent(){return node.parent && (node.prev.id!=HEAD||node.prev.id!=TAIL||null) && node.parent.protected },
   }
 
   Object.keys(methods).forEach(fn => {
@@ -129,8 +122,8 @@ function Tree(){
   var head = Node.call(this,HEAD)
   var tail = Node.call(this,TAIL)
 
-  head.next = head.Bnext = tail
-  tail.prev = tail.Bprev = head
+  head.next = head.n = tail
+  tail.prev = tail.p = head
   delete head.protected.insertBefore
   delete head.protected.remove
   delete tail.protected.insertAfter
@@ -149,6 +142,7 @@ function Tree(){
 
 function log(node){
   var value = {}
+  if(!noe3)
   Object.keys(node).forEach(attr => {
     if(node[attr]==null || node[attr].id){
       value[attr] = node[attr] && node[attr].id
@@ -158,13 +152,17 @@ function log(node){
 }
 
 var tree = Tree()
-tree.head.push('0')//.push('0.0')
-// tree.head.insertAfter('A').push('A1').insertAfter('A3').insertBefore('A2').push('A2.0')
-// tree.tail.insertBefore('B').push('B1').push('B1.0').insertAfter('B1.1')
+tree.head.insertAfter('A').push('A1').insertAfter('A3').insertBefore('A2').push('A2.0')
+tree.tail.insertBefore('B').push('B1').push('B1.0').insertAfter('B1.1')
 
-log(tree._head)
+for(var node = tree.tail.p; node; node = node.p){
+  // log(node)
+  console.log(node.id)
+}
 
-for(var node = tree.head.Anext; node; node = node.Anext){
-  log(node)
-  // console.log(node.id)
+var i = 0
+var node = tree.node("A2.0")
+while(node.id != "B1.0"){
+  i++
+  node = node.n
 }

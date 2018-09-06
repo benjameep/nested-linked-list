@@ -31,20 +31,28 @@ var tree = Tree()
 tree.head.push('A').push('A1').insertAfter('A3').insertBefore('A2').push('A2.0')
 tree.head.push('B').push('B1').push('B1.0').insertAfter('B1.1')
 ```
-###### Iterate through all nodes in order
+###### Iterate through all nodes in order *(preorder traversal)*
 ``` js
 for(var node = tree.head.n; node != null; node = node.n){
-  console.log(node.data)
+  console.log(node.id)
 }
 // => A A1 A2 A2.0 A3 B B1 B1.0 B1.1
+```
+###### Iterate through all nodes backwards *(postorder traversal)*
+``` js
+for(var node = tree.tail.p; node != null; node = node.p){
+  console.log(node.id)
+}
+// => B1.1 B1.0 B1 B A3 A2.0 A2 A1 A
 ```
 ###### Iterate through just `A`'s direct children
 ``` js
 for(var node = tree.node('A'); node != null; node = node.next){
-  console.log(node.data)
+  console.log(node.id)
 }
 // => A1 A2 A3
 ```
+--------
 ###### Find both of `A2.0`'s parents
 ``` js
 var node = tree.node("A2.0")
@@ -64,7 +72,8 @@ i // => 4
 
 ## Reference
 #### Tree
-- _tree._[root]() <*Node*>
+- _tree._[head]() <*Node*>
+- _tree._[tail]() <*Node*>
 - _tree._[node(id)]() <*Node*|*null*>
 
 #### Node
@@ -90,12 +99,14 @@ i // => 4
 ## Magic Disclaimer
 Warning, this library does some weird voodoo witch craft
 
-##### Root node is invisible to siblings
+##### Root nodes are invisible to all other nodes
 ```
-var root = Root()
-var a = root.insertAfter('a')
-root.next // => a
-a.prev    // => null
+var a = tree.head.insertAfter('a')
+tree.head.next    // => a
+a.prev            // => null
+
+tree.tail.prev    // => a
+a.next            // => null
 ```
 ##### References are immutable
 ```
@@ -130,6 +141,9 @@ The first of this node's children. `null` if no children.
 
 ###### _node_.**tail** <*Node*|*null*>
 The last of this node's children. `null` if no children.
+
+###### _node_.**parent** <*Node*|*null*>
+The parent of the node. `null` if sibling of root.
 
 ###### _node_.**parent** <*Node*|*null*>
 The parent of the node. `null` if sibling of root.
