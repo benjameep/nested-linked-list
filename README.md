@@ -77,15 +77,15 @@ i // => 4
 - _tree._[node(id)]() <*Node*|*null*>
 
 #### Node
-- _node_[.id]() <*String*>
-- _node_[.data]() <*Any*>
-- _node_[.n]() <*Node*|*null*>
-- _node_[.p]() <*Node*|*null*>
-- _node_[.next]() <*Node*|*null*>
-- _node_[.prev]() <*Node*|*null*>
-- _node_[.head]() <*Node*|*null*>
-- _node_[.tail]() <*Node*|*null*>
-- _node_[.parent]() <*Node*|*null*>
+- _node_[.id](#nodeid-string) <*String*>
+- _node_[.data](#nodedata-any) <*Any*>
+- _node_[.n](#noden-nodenull) <*Node*|*null*>
+- _node_[.p](#nodep-nodenull) <*Node*|*null*>
+- _node_[.next](#nodenext-nodenull) <*Node*|*null*>
+- _node_[.prev](#nodeprev-nodenull) <*Node*|*null*>
+- _node_[.head](#nodehead-nodenull) <*Node*|*null*>
+- _node_[.tail](#nodetail-nodenull) <*Node*|*null*>
+- _node_[.parent](#nodeparent-nodenull) <*Node*|*null*>
 - _node_[.insertBefore(id [,data])]() <*Node*>
 - _node_[.insertAfter(id [,data])]() <*Node*>
 - _node_[.push(id [,data])]() <*Node*>
