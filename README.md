@@ -17,30 +17,49 @@ This library does not write those awfull recursive functions
 for you, rather it supplies all the references you need to make
 those functions not recursive and easy to understand.
 
-## Example
-``` js
-const root = Root()
+## Examples
 
-/* Create the tree from the above example
+###### Creating the tree
+``` js
+/* The tree from the above example
 
     A               B
       A1 A2      A3   B1
             A2.0         B1.0 B1.1
 */
-root.push('A').push('A1').insertAfter('A3').insertBefore('A2').push('A2.0')
-root.push('B').push('B1').push('B1.0').insertAfter('B1.1')
-
-/* Iterate through all nodes in order */
-for(var node = root.n; node != null; node = node.n){
+var tree = Tree()
+tree.head.push('A').push('A1').insertAfter('A3').insertBefore('A2').push('A2.0')
+tree.head.push('B').push('B1').push('B1.0').insertAfter('B1.1')
+```
+###### Iterate through all nodes in order
+``` js
+for(var node = tree.head.n; node != null; node = node.n){
   console.log(node.data)
 }
 // => A A1 A2 A2.0 A3 B B1 B1.0 B1.1
-
-/* Iterate through just A's direct children */
-for(var node = root.head.head; node != null; node = node.next){
+```
+###### Iterate through just `A`'s direct children
+``` js
+for(var node = tree.node('A'); node != null; node = node.next){
   console.log(node.data)
 }
 // => A1 A2 A3
+```
+###### Find both of `A2.0`'s parents
+``` js
+var node = tree.node("A2.0")
+node.parent // => A2
+node.parent.next // => A3
+```
+###### Measure the distance between `A2.0` and `B2.0`
+``` js
+var i = 0
+var node = tree.node("A2.0")
+while(node.id != "B1.0"){
+  i++
+  node = node.n
+}
+i // => 4
 ```
 
 ## Reference
